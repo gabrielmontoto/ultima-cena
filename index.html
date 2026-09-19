@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#100e12" />
+    <meta name="description" content="Descubra qual papel você teria em um filme de terror." />
+    <title>Qual é seu papel no filme de terror? | Última Cena</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header wrap">
+      <a class="brand" href="./" aria-label="Voltar ao início do teste"><span class="brand-mark">✦</span> ÚLTIMA CENA</a>
+      <span class="header-note">UM TESTE PARA QUEM FICARIA ATÉ OS CRÉDITOS</span>
+    </header>
+
+    <main class="wrap">
+      <section class="intro" id="intro" aria-labelledby="intro-title">
+        <div class="intro-copy">
+          <p class="eyebrow"><span class="line"></span> ARQUIVO Nº 013 / ESCALAÇÃO DO ELENCO</p>
+          <h1 id="intro-title">Quando a noite cair,<br /><em>qual é o seu papel?</em></h1>
+          <p class="lede">Uma porta range. O telefone toca. Todo mundo tem um papel nessa história, até as luzes se apagarem. Responda e descubra qual arquétipo do cinema de terror combina com suas escolhas.</p>
+          <div class="intro-actions">
+            <button class="button button-primary" id="start-button" type="button">COMEÇAR O TESTE <span aria-hidden="true">↗</span></button>
+            <span class="duration" id="duration"></span>
+          </div>
+        </div>
+        <div class="poster" aria-hidden="true">
+          <div class="poster-top">UMA HISTÓRIA SOBRE INSTINTO</div>
+          <div class="moon"></div>
+          <div class="house"><div class="house-window"></div><div class="house-door"></div></div>
+          <div class="poster-ground"></div>
+          <div class="poster-bottom"><span>01</span><span>QUAL É O SEU PAPEL?</span><span>10</span></div>
+        </div>
+      </section>
+
+      <section class="quiz panel hidden" id="quiz" aria-labelledby="question-title">
+        <div class="panel-top">
+          <span class="section-tag">O TESTE</span>
+          <span class="question-counter" id="question-counter"></span>
+        </div>
+        <div class="progress-track" role="progressbar" id="progress" aria-label="Progresso do teste" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="question-content" aria-live="polite">
+          <p class="question-kicker" id="question-kicker"></p>
+          <h2 id="question-title" tabindex="-1"></h2>
+          <p class="question-hint">O quanto esta frase combina com você?</p>
+          <div class="scale" id="scale" role="radiogroup" aria-labelledby="question-title"></div>
+          <div class="scale-labels"><span>DISCORDO TOTALMENTE</span><span>CONCORDO TOTALMENTE</span></div>
+          <p class="validation" id="validation" role="alert" hidden>Escolha uma resposta para continuar.</p>
+        </div>
+        <div class="panel-bottom">
+          <button class="button button-quiet" id="back-button" type="button">← VOLTAR</button>
+          <button class="button button-primary" id="next-button" type="button">PRÓXIMA <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section class="result hidden" id="result" aria-labelledby="result-title">
+        <div class="result-head">
+          <p class="eyebrow"><span class="line"></span> SEU PERFIL FOI REVELADO</p>
+          <p class="result-index" id="result-index"></p>
+        </div>
+        <div class="result-grid">
+          <div class="result-poster" id="result-poster" aria-hidden="true"><span class="result-poster-number" id="result-number"></span><span class="result-poster-symbol" id="result-symbol"></span><span class="result-poster-caption" id="result-poster-caption"></span></div>
+          <div class="result-copy">
+            <p class="result-label">NO ELENCO, VOCÊ SERIA</p>
+            <h2 id="result-title"></h2>
+            <p class="result-film" id="result-film"></p>
+            <p class="result-description" id="result-description"></p>
+            <div class="reference"><span class="small-heading">PERSONAGEM DE REFERÊNCIA</span><p id="result-reference"></p></div>
+            <div class="result-traits"><span class="small-heading">TRAÇOS EM DESTAQUE</span><div class="trait-tags" id="trait-tags"></div></div>
+            <div class="result-actions"><button class="button button-primary" id="share-button" type="button">COMPARTILHAR RESULTADO <span aria-hidden="true">↗</span></button><button class="button button-quiet" id="restart-button" type="button">REFAZER TESTE</button></div>
+            <p class="share-status" id="share-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <div class="runner-up" id="runner-up"></div>
+      </section>
+
+      <section class="about" aria-labelledby="about-title">
+        <div><span class="section-tag">SOBRE O TESTE</span><h2 id="about-title">Toda boa história começa com uma escolha.</h2></div>
+        <p>Este é um teste de entretenimento sobre arquétipos do cinema de terror. As respostas são comparadas a perfis fictícios criados para este projeto. Os personagens citados são referências de cada papel; algumas referências revelam acontecimentos dos filmes. Nenhuma resposta é enviada a um servidor. O projeto não tem vínculo com a IDRlabs ou com os filmes citados.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer wrap"><span>ÚLTIMA CENA © <span id="year"></span></span><span>FEITO PARA QUEM NÃO SOBE AS ESCADAS</span></footer>
+  </body>
+</html>
