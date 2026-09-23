@@ -28,7 +28,15 @@ const questions = [
   { text: "Se alguém precisasse ficar para trás, eu consideraria assumir esse papel.", trait: "sacrificio", reverse: false },
   { text: "Em uma situação caótica, gosto de assumir o controle das decisões.", trait: "controle", reverse: false },
   { text: "Se meu plano encontra resistência, tento conduzir as pessoas para que ele continue funcionando.", trait: "controle", reverse: false },
-  { text: "Prefiro acompanhar as decisões do grupo a determinar o rumo dos acontecimentos.", trait: "controle", reverse: true }
+  { text: "Prefiro acompanhar as decisões do grupo a determinar o rumo dos acontecimentos.", trait: "controle", reverse: true },
+  { text: "Ao chegar a um lugar desconhecido, reparo nas saídas antes de me acomodar.", survival: true, risk: "ambiente", reverse: false },
+  { text: "Se o grupo escuta um barulho estranho, separar-se parece a forma mais rápida de investigar.", survival: true, risk: "separacao", reverse: true },
+  { text: "Quando o sinal está ruim, economizo bateria e aviso alguém sobre minha localização.", survival: true, risk: "comunicacao", reverse: false },
+  { text: "Eu abriria a porta para uma pessoa pedindo ajuda, mesmo sem conseguir confirmar quem ela é.", survival: true, risk: "confianca", reverse: true },
+  { text: "Depois de escapar de um perigo imediato, eu voltaria para buscar um objeto importante.", survival: true, risk: "retorno", reverse: true },
+  { text: "Se percebo sinais reais de perigo, aviso o grupo mesmo correndo o risco de parecer exagerado(a).", survival: true, risk: "alerta", reverse: false },
+  { text: "Durante uma fuga, prefiro um caminho conhecido e iluminado a um atalho escuro.", survival: true, risk: "rota", reverse: false },
+  { text: "Quando tudo parece ter acabado, ainda verifico se o ambiente está realmente seguro.", survival: true, risk: "vigilancia", reverse: false }
 ];
 
 const traitNames = {
@@ -57,7 +65,60 @@ const archetypes = [
   { name: "Assassino(a)", subtitle: "A PESSOA QUE CONTROLA O PESADELO", caption: "A AMEAÇA ESTAVA NO ELENCO", symbol: "▲", color: "#782d35", reference: "Billy Loomis · Pânico (1996)", profile: { confronto: .93, planejamento: .92, cuidado: .08, improviso: .78, persistencia: .94, humor: .32, curiosidade: .55, desconfianca: .88, sacrificio: .05, controle: .99 }, description: "Você ocuparia o centro oculto da história: paciente, controlador(a) e sempre alguns passos à frente. Seu perfil combina confronto, planejamento e persistência, com pouca disposição para colocar as necessidades do grupo acima do próprio objetivo." }
 ];
 
-const storageKey = "ultima-cena-respostas-v3";
+const deathScenarios = {
+  "Sobrevivente final": [
+    { risks: ["retorno", "vigilancia", "ambiente"], title: "Você volta para conferir se acabou mesmo", description: "Depois de uma fuga quase perfeita, você retorna ao lugar onde tudo aconteceu para confirmar a morte da ameaça. O corpo sumiu, a música volta e sua sequência termina ali." },
+    { risks: ["separacao", "rota", "alerta"], title: "Você tenta resolver a última parte sozinho(a)", description: "Você encontra uma saída para todos, mas decide cobrir o caminho sem companhia. A ameaça conhece um atalho e transforma seu gesto corajoso na última surpresa do filme." },
+    { risks: ["confianca", "comunicacao"], title: "Você confia no sobrevivente errado", description: "Alguém aparece oferecendo ajuda e conhece detalhes demais sobre a noite. Quando você percebe que a pessoa fazia parte do plano, já entregou sua única forma de defesa." }
+  ],
+  "Investigador(a)": [
+    { risks: ["ambiente", "separacao", "retorno"], title: "A pista perfeita estava no porão", description: "Você encontra a prova capaz de explicar tudo e desce sozinho(a) para buscá-la. A pista era verdadeira; o problema era quem estava esperando ao lado dela." },
+    { risks: ["comunicacao", "vigilancia", "alerta"], title: "Você para para registrar a descoberta", description: "Em vez de fugir, você tenta fotografar e enviar a prova definitiva. A mensagem fica presa em “enviando” enquanto a ameaça aparece no reflexo da tela." },
+    { risks: ["confianca", "rota"], title: "Sua fonte anônima marca o último encontro", description: "Uma pessoa promete todas as respostas em um lugar isolado. Você chega com perguntas excelentes e descobre tarde demais que a fonte era também a resposta." }
+  ],
+  "Protetor(a)": [
+    { risks: ["retorno", "alerta", "separacao"], title: "Você volta para buscar quem ficou", description: "O grupo já estava seguro, mas você escuta alguém pedindo ajuda e retorna. A voz era uma armadilha, e seu impulso de proteger coloca você diretamente no caminho da ameaça." },
+    { risks: ["vigilancia", "rota", "ambiente"], title: "Você segura a porta por tempo demais", description: "Todos conseguem passar enquanto você mantém a passagem aberta. Você espera só mais um segundo pela última pessoa, e esse segundo é exatamente o que a ameaça precisava." },
+    { risks: ["confianca", "comunicacao"], title: "Você acolhe alguém que não deveria estar ali", description: "Você oferece abrigo a uma figura aparentemente ferida. Quando o grupo percebe que deixou o perigo entrar, você já está perto demais para fechar a porta." }
+  ],
+  "Cético(a)": [
+    { risks: ["ambiente", "vigilancia", "alerta"], title: "Você vai provar que era só o encanamento", description: "Cansado(a) do pânico do grupo, você segue o barulho para demonstrar que existe uma explicação simples. Existe uma explicação, mas ela tem uma arma e estava esperando no escuro." },
+    { risks: ["confianca", "comunicacao"], title: "Você abre a porta para encerrar a discussão", description: "A pessoa do lado de fora parece perfeitamente normal. Você abre a porta para mostrar que todos estão exagerando e consegue provar apenas que o medo do grupo fazia sentido." },
+    { risks: ["rota", "separacao", "retorno"], title: "Seu atalho era estatisticamente razoável", description: "Você escolhe a rota mais curta e descarta os avisos como superstição. O cálculo estava correto; o mapa é que não mostrava o que vivia naquele caminho." }
+  ],
+  "Alívio cômico": [
+    { risks: ["alerta", "comunicacao", "ambiente"], title: "Sua última piada chama atenção demais", description: "Você quebra o silêncio com a melhor frase da noite. O grupo ri, a ameaça escuta e sua saída de cena ganha uma ironia que ninguém queria presenciar." },
+    { risks: ["separacao", "retorno", "rota"], title: "Você sai sozinho(a) por uma coisa completamente dispensável", description: "No meio da fuga, você percebe que deixou o celular, a bebida ou outro item para trás. A busca dura pouco e rende a cena que o público sabia que viria." },
+    { risks: ["confianca", "vigilancia"], title: "Você acha que o assassino é alguém fantasiado", description: "Você elogia a fantasia e faz uma brincadeira antes de perceber que ninguém ali está numa festa. A piada funciona; infelizmente, só para o público." }
+  ],
+  "Curioso(a) imprudente": [
+    { risks: ["ambiente", "retorno", "vigilancia"], title: "Você mexe no objeto que dizia “não toque”", description: "O aviso parecia dramático demais para ser levado a sério. Você abre, aperta ou lê a coisa proibida e descobre por que ninguém havia retirado a placa." },
+    { risks: ["rota", "separacao", "comunicacao"], title: "Você entra no túnel para ver onde ele termina", description: "O caminho estreito parece uma descoberta incrível e você decide explorá-lo sem avisar o grupo. Ele realmente leva a algum lugar, só não existe caminho de volta." },
+    { risks: ["confianca", "alerta"], title: "Você segue a voz que conhece seu nome", description: "Uma voz familiar chama de dentro da casa abandonada. Você entra para descobrir quem é e encontra algo que aprendeu a imitar pessoas muito antes de conhecer você." }
+  ],
+  "Figura suspeita": [
+    { risks: ["comunicacao", "alerta", "ambiente"], title: "Seus avisos misteriosos fazem o grupo trancar você para fora", description: "Você tenta alertar todo mundo usando frases vagas e desaparecendo nas sombras. Quando finalmente decide explicar, ninguém abre a porta e a ameaça já está atrás de você." },
+    { risks: ["vigilancia", "retorno", "rota"], title: "Você guarda a informação decisiva até tarde demais", description: "Você conhecia uma passagem segura, mas esperou o momento certo para revelar. Quando resolve contar, a passagem já está bloqueada e você é a única pessoa do lado errado." },
+    { risks: ["confianca", "separacao"], title: "Seu contato secreto trabalha para o outro lado", description: "Você marca um encontro longe do grupo para trocar informações. A pessoa aparece no horário, confirma todas as suas suspeitas e elimina a única testemunha." }
+  ],
+  "Primeira vítima": [
+    { risks: ["confianca", "comunicacao", "alerta"], title: "Você continua a conversa com a pessoa errada", description: "Uma ligação estranha começa quase divertida. Você demora demais para desligar e percebe que quem está falando consegue ver cada movimento dentro da casa." },
+    { risks: ["ambiente", "separacao", "vigilancia"], title: "Você investiga o barulho sem acender a luz", description: "O som vem do cômodo ao lado e parece simples demais para acordar alguém. Você entra sozinho(a), a porta fecha e o título do filme aparece logo depois." },
+    { risks: ["retorno", "rota"], title: "Você volta para buscar as chaves", description: "Você já estava do lado de fora quando percebe que deixou as chaves sobre a mesa. São poucos passos até a casa e exatamente o tempo necessário para abrir o filme com impacto." }
+  ],
+  "Sacrifício heroico": [
+    { risks: ["retorno", "separacao", "vigilancia"], title: "Você fica segurando a passagem", description: "Você mantém a porta aberta até a última pessoa escapar e sabe que não haverá tempo para atravessar. O grupo sobrevive porque você decidiu transformar segundos em uma despedida." },
+    { risks: ["alerta", "rota", "ambiente"], title: "Você atrai a ameaça para longe do grupo", description: "Sem outra saída, você faz barulho e corre na direção oposta. O plano funciona perfeitamente para todos, menos para a pessoa que precisou executá-lo." },
+    { risks: ["comunicacao", "confianca"], title: "Você entrega sua única proteção para outra pessoa", description: "Alguém precisa mais da arma, da lanterna ou do último lugar no veículo. Você entrega o recurso, fica para trás e garante que a história dos outros continue." }
+  ],
+  "Assassino(a)": [
+    { risks: ["vigilancia", "alerta", "retorno"], title: "Seu monólogo dá tempo para a vítima reagir", description: "Com tudo sob controle, você decide explicar cada detalhe do plano. Enquanto aprecia a própria revelação, alguém alcança uma arma improvisada e muda o final." },
+    { risks: ["rota", "ambiente", "separacao"], title: "Você persegue a vítima pelo atalho errado", description: "Você abandona o plano para terminar a perseguição rapidamente. A vítima conhece melhor o lugar, prepara uma armadilha simples e transforma o caçador em cena final." },
+    { risks: ["confianca", "comunicacao"], title: "Seu cúmplice decide ficar com todo o crédito", description: "Você confia que a parceria vai durar até o fim. Na hora da revelação, seu cúmplice percebe que uma pessoa a menos significa uma versão mais conveniente da história." }
+  ]
+};
+
+const storageKey = "ultima-cena-respostas-v4";
 const intro = document.querySelector("#intro");
 const quiz = document.querySelector("#quiz");
 const result = document.querySelector("#result");
@@ -66,7 +127,7 @@ let current = 0;
 let resultArchetype = null;
 
 document.querySelector("#year").textContent = new Date().getFullYear();
-document.querySelector("#duration").textContent = `${questions.length} afirmações · cerca de 5 minutos`;
+document.querySelector("#duration").textContent = `${questions.length} afirmações · cerca de 6 minutos`;
 document.querySelector("#progress").setAttribute("aria-valuemax", questions.length);
 document.querySelector("#start-button").addEventListener("click", () => {
   const firstBlank = answers.findIndex(answer => answer === null);
@@ -112,7 +173,10 @@ function showSection(section) {
 function renderQuestion() {
   const question = questions[current];
   document.querySelector("#question-counter").textContent = `${String(current + 1).padStart(2, "0")} / ${String(questions.length).padStart(2, "0")}`;
-  document.querySelector("#question-kicker").textContent = `CENA ${String(current + 1).padStart(2, "0")}`;
+  const survivalPosition = questions.slice(0, current + 1).filter(item => item.survival).length;
+  document.querySelector("#question-kicker").textContent = question.survival
+    ? `PROTOCOLO DE SOBREVIVÊNCIA · ${String(survivalPosition).padStart(2, "0")} / 08`
+    : `CENA ${String(current + 1).padStart(2, "0")}`;
   document.querySelector("#question-title").textContent = question.text;
   document.querySelector("#progress").setAttribute("aria-valuenow", current);
   document.querySelector("#progress-fill").style.width = `${(current / questions.length) * 100}%`;
@@ -160,10 +224,47 @@ function nextQuestion() {
 function calculateTraits() {
   const totals = Object.fromEntries(Object.keys(traitNames).map(trait => [trait, []]));
   questions.forEach((question, index) => {
+    if (!question.trait) return;
     const value = (answers[index] - 1) / 4;
     totals[question.trait].push(question.reverse ? 1 - value : value);
   });
   return Object.fromEntries(Object.entries(totals).map(([trait, values]) => [trait, values.reduce((sum, value) => sum + value, 0) / values.length]));
+}
+
+function calculateSurvival(traits) {
+  const decisionScores = questions.flatMap((question, index) => {
+    if (!question.survival) return [];
+    const value = (answers[index] - 1) / 4;
+    return [{ risk: question.risk, value: question.reverse ? 1 - value : value }];
+  });
+  const decisions = decisionScores.reduce((sum, item) => sum + item.value, 0) / decisionScores.length;
+  const risks = [...decisionScores].sort((a, b) => a.value - b.value).map(item => item.risk);
+  const confrontationBalance = Math.max(0, 1 - Math.abs(traits.confronto - .65) / .65);
+  const readiness =
+    decisions * .70 +
+    traits.planejamento * .08 +
+    traits.improviso * .07 +
+    traits.persistencia * .06 +
+    traits.desconfianca * .04 +
+    traits.cuidado * .03 +
+    confrontationBalance * .02;
+  const percentage = Math.round(18 + readiness * 74);
+
+  if (percentage >= 75) return { percentage, risks, level: "high", title: "Você sobreviveria", description: "Você combina cautela, leitura do ambiente e boas decisões sob pressão. Ainda levaria alguns sustos, mas tem grandes chances de chegar aos créditos." };
+  if (percentage >= 55) return { percentage, risks, level: "medium", title: "Você sobreviveria por pouco", description: "Seu instinto funciona, mas algumas escolhas colocariam você perto demais do perigo. Você chegaria à última cena com algumas histórias difíceis de explicar." };
+  if (percentage >= 38) return { percentage, risks, level: "low", title: "Você vira a morte boba do meio do filme", description: "Você escapa das primeiras ameaças e começa a acreditar que entendeu as regras. É uma boa participação, encerrada por uma decisão que faria todo o cinema gritar com a tela." };
+  return { percentage, risks, level: "critical", title: "Você não chega nem aos créditos iniciais", description: "Suas escolhas têm energia de primeira morte do filme: rápidas, fatais e responsáveis por mostrar ao público que o perigo é real." };
+}
+
+function selectDeathScenario(archetype, risks) {
+  const options = deathScenarios[archetype.name];
+  return options.map((scene, sceneIndex) => ({
+    scene,
+    score: scene.risks.reduce((total, risk) => {
+      const position = risks.indexOf(risk);
+      return total + (position === -1 ? 0 : risks.length - position);
+    }, 0) - sceneIndex * .001
+  })).sort((a, b) => b.score - a.score)[0].scene;
 }
 
 function rankArchetypes(traits) {
@@ -175,6 +276,7 @@ function rankArchetypes(traits) {
 
 function renderResult() {
   const traits = calculateTraits();
+  const survival = calculateSurvival(traits);
   const ranking = rankArchetypes(traits);
   resultArchetype = ranking[0].archetype;
   document.querySelector("#result-title").textContent = resultArchetype.name;
@@ -186,6 +288,21 @@ function renderResult() {
   document.querySelector("#result-symbol").textContent = resultArchetype.symbol;
   document.querySelector("#result-poster-caption").textContent = resultArchetype.caption;
   document.querySelector("#result-poster").style.background = `radial-gradient(circle at 50% 45%, ${resultArchetype.color}, #19141b 72%)`;
+  const survivalCard = document.querySelector("#survival-card");
+  survivalCard.dataset.level = survival.level;
+  document.querySelector("#survival-score").textContent = `${survival.percentage}%`;
+  document.querySelector("#survival-title").textContent = survival.title;
+  document.querySelector("#survival-description").textContent = survival.description;
+  document.querySelector("#survival-fill").style.width = `${survival.percentage}%`;
+  const deathCard = document.querySelector("#death-card");
+  const hasDeathScene = survival.level === "low" || survival.level === "critical";
+  deathCard.classList.toggle("hidden", !hasDeathScene);
+  if (hasDeathScene) {
+    const death = selectDeathScenario(resultArchetype, survival.risks);
+    document.querySelector("#death-timing").textContent = survival.level === "critical" ? "SUA CENA FINAL · ANTES DOS CRÉDITOS" : "SUA CENA FINAL · NO MEIO DO FILME";
+    document.querySelector("#death-title").textContent = death.title;
+    document.querySelector("#death-description").textContent = death.description;
+  }
   const tags = document.querySelector("#trait-tags");
   tags.replaceChildren();
   Object.entries(traits).sort((a, b) => b[1] - a[1]).slice(0, 3).forEach(([trait]) => {
@@ -206,7 +323,11 @@ function renderResult() {
 
 async function shareResult() {
   if (!resultArchetype) return;
-  const text = `No teste Última Cena, meu papel no filme de terror seria ${resultArchetype.name}. Qual seria o seu?`;
+  const survivalResult = document.querySelector("#survival-title").textContent.toLowerCase();
+  const survivalScore = document.querySelector("#survival-score").textContent;
+  const deathCard = document.querySelector("#death-card");
+  const deathDetail = deathCard.classList.contains("hidden") ? "" : ` Minha cena final: ${document.querySelector("#death-title").textContent}.`;
+  const text = `No teste Última Cena, meu papel seria ${resultArchetype.name} e o veredito foi: ${survivalResult} (${survivalScore}).${deathDetail} Qual seria o seu?`;
   const data = { title: "Última Cena — seu papel no filme de terror", text, url: location.href };
   const status = document.querySelector("#share-status");
   try {

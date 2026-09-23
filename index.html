@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#100e12" />
-    <meta name="description" content="Descubra qual papel você teria em um filme de terror." />
+    <meta name="description" content="Descubra qual papel você teria em um filme de terror e se chegaria vivo aos créditos." />
     <title>Qual é seu papel no filme de terror? | Última Cena</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="app.js" defer></script>
@@ -21,7 +21,7 @@
         <div class="intro-copy">
           <p class="eyebrow"><span class="line"></span> ARQUIVO Nº 013 / ESCALAÇÃO DO ELENCO</p>
           <h1 id="intro-title">Quando a noite cair,<br /><em>qual é o seu papel?</em></h1>
-          <p class="lede">Uma porta range. O telefone toca. Todo mundo tem um papel nessa história, até as luzes se apagarem. Responda e descubra qual arquétipo do cinema de terror combina com suas escolhas.</p>
+          <p class="lede">Uma porta range. O telefone toca. Todo mundo tem um papel nessa história, até as luzes se apagarem. Descubra seu arquétipo e se suas escolhas levariam você vivo até os créditos.</p>
           <div class="intro-actions">
             <button class="button button-primary" id="start-button" type="button">COMEÇAR O TESTE <span aria-hidden="true">↗</span></button>
             <span class="duration" id="duration"></span>
@@ -41,7 +41,7 @@
           <span class="section-tag">O TESTE</span>
           <span class="question-counter" id="question-counter"></span>
         </div>
-        <div class="progress-track" role="progressbar" id="progress" aria-label="Progresso do teste" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-track" role="progressbar" id="progress" aria-label="Progresso do teste" aria-valuemin="0" aria-valuemax="38" aria-valuenow="0"><div class="progress-fill" id="progress-fill"></div></div>
         <div class="question-content" aria-live="polite">
           <p class="question-kicker" id="question-kicker"></p>
           <h2 id="question-title" tabindex="-1"></h2>
@@ -68,6 +68,17 @@
             <h2 id="result-title"></h2>
             <p class="result-film" id="result-film"></p>
             <p class="result-description" id="result-description"></p>
+            <div class="survival-card" id="survival-card" data-level="medium">
+              <div class="survival-top"><span class="small-heading">ÍNDICE DE SOBREVIVÊNCIA</span><strong id="survival-score"></strong></div>
+              <div class="survival-meter" aria-hidden="true"><span id="survival-fill"></span></div>
+              <h3 id="survival-title"></h3>
+              <p id="survival-description"></p>
+            </div>
+            <div class="death-card hidden" id="death-card">
+              <span class="small-heading" id="death-timing"></span>
+              <h3 id="death-title"></h3>
+              <p id="death-description"></p>
+            </div>
             <div class="reference"><span class="small-heading">PERSONAGEM DE REFERÊNCIA</span><p id="result-reference"></p></div>
             <div class="result-traits"><span class="small-heading">TRAÇOS EM DESTAQUE</span><div class="trait-tags" id="trait-tags"></div></div>
             <div class="result-actions"><button class="button button-primary" id="share-button" type="button">COMPARTILHAR RESULTADO <span aria-hidden="true">↗</span></button><button class="button button-quiet" id="restart-button" type="button">REFAZER TESTE</button></div>
@@ -79,7 +90,7 @@
 
       <section class="about" aria-labelledby="about-title">
         <div><span class="section-tag">SOBRE O TESTE</span><h2 id="about-title">Toda boa história começa com uma escolha.</h2></div>
-        <p>Este é um teste de entretenimento sobre arquétipos do cinema de terror. As respostas são comparadas a perfis fictícios criados para este projeto. Os personagens citados são referências de cada papel; algumas referências revelam acontecimentos dos filmes. Nenhuma resposta é enviada a um servidor. O projeto não tem vínculo com a IDRlabs ou com os filmes citados.</p>
+        <p>Este é um teste de entretenimento sobre arquétipos do cinema de terror. O índice de sobrevivência combina decisões práticas com alguns traços do perfil e não representa uma previsão real. Os personagens citados são referências de cada papel; algumas referências revelam acontecimentos dos filmes. Nenhuma resposta é enviada a um servidor. O projeto não tem vínculo com a IDRlabs ou com os filmes citados.</p>
       </section>
     </main>
 
